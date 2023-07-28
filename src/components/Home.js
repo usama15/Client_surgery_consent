@@ -5,10 +5,11 @@ import { Container, Row, Col, InputGroup, Form, Button } from 'react-bootstrap'
 import { useForm, useFieldArray } from 'react-hook-form';
 import { AiOutlineConsoleSql, AiOutlineMinus } from 'react-icons/ai';
 import axios from 'axios';
-import img1 from '../images/Chiropractics.png'
+import img1 from '../images/mainlogo.png'
 import NestedArray from './NestedArray';
 import ProcedureFieldArray from './ProcedureFieldArray';
 import GetServerUrl from '../GetServerUrl';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 
 const Document = ({ site, side, proceduresArr, allBenefits, allRisks }) => {
@@ -27,6 +28,7 @@ const Document = ({ site, side, proceduresArr, allBenefits, allRisks }) => {
     console.log("ALL BENEFIT ARRAY PRINT : ", allBenefits)
 
     return (
+        <>
         <div className='d-none'>
             <div ref={componentRef}>
                 <div className='bg-light'>
@@ -224,6 +226,8 @@ const Document = ({ site, side, proceduresArr, allBenefits, allRisks }) => {
             </div>
 
         </div>
+        </>
+        
     )
 }
 
@@ -242,13 +246,13 @@ const Home = () => {
     const [benefits, setBenefits] = useState([])
     const [risks, setRisks] = useState([])
     const [printData, setPrintData] = useState();
-    const { append, fields, remove } = useFieldArray({ control, name: "procedure" })
+    const { fields, remove } = useFieldArray({ control, name: "procedure" })
 
     const additonalPoints = () => {
         // alert("clicked")
         let genProcedure = {}
         proceduresArr.map((pro1, index) => {
-            if (pro1.name.label === 'Add New Procedure') {
+            if (pro1.name === 'Add New Procedure') {
                 benPoints.splice(index, 0, 1000)
                 risPoints.splice(index, 0, 1000)
                 console.log("Pro 1 Benefits : ", pro1.benefits)
@@ -481,6 +485,8 @@ const Home = () => {
     useEffect(() => {
         axios.get(`${GetServerUrl()}/admin/benefits`)
             .then((response) => {
+                console.log("benefits", response.data.benefits)
+
                 setBenefits(response.data.benefits)
             }).catch((err) => {
                 console.log("Error : ", err)
@@ -490,6 +496,7 @@ const Home = () => {
     useEffect(() => {
         axios.get(`${GetServerUrl()}/admin/risks`)
             .then((response) => {
+                console.log("risks", response.data.risks)
                 setRisks(response.data.risks)
             }).catch((err) => {
                 console.log("Error : ", err)
@@ -517,86 +524,81 @@ const Home = () => {
     console.log("DATA : DAta : ", data)
     const heading = {
         textAlign: "center",
-     fontWeight:"bold"
+        fontWeight: "bold"
     }
+    const addP = {
+        width: "100%",
+        borderWidth: 1,
+        borderColor: "black",
+        opacity: 0.5,
+        marginBottom: 10
+      }
     return (
         <>
+            <div className="px-md-5 px-6 mt-5 py-3 ">
 
-            <Container className='mt-5'>
+                <h4 style={heading} className='px-md-5 mt-5 px-6  py-3 align-centre ' >
+                    Consent for surgical procedure
+                </h4>
+            </div>
+            <Col md={{ span: 9, offset: 2 }}>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Form.Group as={Row} className="mb-2 pt-4" controlId="formPlaintextEmail">
+
+                        <Col sm='2'>
+                            <Form.Label>
+                                <h6>Side</h6>
+                            </Form.Label>
+                            <Form.Control style={{ borderColor: "black" }} type="text" onChange={(e) => setSide(e.target.value)} placeholder='Enter Side' />
+                        </Col>
+                        <Col sm="2">
+                            <Form.Label >
+                                <h6>Site</h6>
+                            </Form.Label>
+                            <Form.Control style={{ borderColor: "black" }} type="text" onChange={(e) => setSite(e.target.value)} placeholder='Enter Site' />
+                        </Col>
+                        <Col sm="6" >
+                            <Form.Label>
+                                <h6 >Procedure</h6>
+                            </Form.Label>
+                            <ProcedureFieldArray {...{ register, control, watch, reset, benPoints, setBenPoints, risPoints, setRisPoints, ids, setIds }} />
+
+                        </Col>
+
+                    </Form.Group>
+                    {/* <button type='submit' className='btn btn-info'>Submit</button> */}
+                    {/* <button onClick={() => append()} className='btn btn-success'>Add Procedure</button> */}
 
 
-                <Row>
-                    <Col md={{ span: 9, offset: 2 }}>
-                        <div className="px-md-5 px-8 mt-3 py-3">
-                            <h4 style={heading} className='px-md-5 mt-5 px-6  py-3 align-centre' >
-                                Consent for surgical procedure
-                            </h4>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <Form.Group as={Row} className="mb-2 pt-4" controlId="formPlaintextEmail">
-
-                                    <Col sm='3'>
-                                        <Form.Label>
-                                            <h6>Side</h6>
-                                        </Form.Label>
-                                        <Form.Control style={{ borderColor: "black" }} type="text" onChange={(e) => setSide(e.target.value)} placeholder='Enter Side' />
-                                    </Col>
-                                    <Col sm="3">
-                                        <Form.Label >
-                                            <h6>Site</h6>
-                                        </Form.Label>
-                                        <Form.Control style={{ borderColor: "black" }} type="text" onChange={(e) => setSite(e.target.value)} placeholder='Enter Site' />
-                                    </Col>
-
-                                    <Col sm="4" >
-                                        <Form.Label>
-                                            <h6>Procedure</h6>
-                                        </Form.Label>
-                                        <Form.Control style={{ borderColor: "black" }} type="text" placeholder='Enter Procedure' />
-
-                                    </Col>
-                                </Form.Group>
-                                {/* <button type='submit' className='btn btn-info'>Submit</button> */}
-                                {/* <button onClick={() => append()} className='btn btn-success'>Add Procedure</button> */}
-                                <ProcedureFieldArray {...{ register, control, watch, reset, benPoints, setBenPoints, risPoints, setRisPoints, ids, setIds }} />
-
-                                <div>
-                                    <button onClick={() => handlePrint()} className='btn btn-success mb-5' >Print Document</button>
-                                </div>
-                            </form>
-                        </div>
-                    </Col>
-                </Row>
-            </Container>
+                    <div>
+                        {/* <button onClick={() => handlePrint()} className='btn btn-success mb-5' >Print Document</button> */}
+                    </div>
+                </form>
+            </Col>
 
 
             <Container className='mt-3'>
-                <Row className='py-2 px-5 my-3'>
+                <Row className='py-5 px-8 my-3'>
 
                     <Col md={{ span: 9, offset: 2 }} >
 
 
                         <h4 className='py-2 pt-4'>Benefits</h4>
                         <table className='table-benefits'>
-                            <thead>
+                            {/* <thead>
                                 <tr>
-                                    {console.log("Print document check point")}
-                                    {console.log("Print document check point")}
-                                    {console.log("Print document check point")}
                                     <th>#</th>
-                                    <th>Benefit</th>
-                                    <th>Explaination</th>
-                                    <th>Statistics</th>
-                                    <th>Procedure</th>
+                                    <th>Benefit Name</th>
+                                    <th>Detail</th>
                                 </tr>
-                            </thead>
+                            </thead> */}
                             <tbody>
                                 {benefits && benefits.map((pro1, index) => (
                                     <tr key={index + 1}>
                                         {console.log("Benefit print in document : ", pro1)}
                                         <th>{index + 1}</th>
-                                        <td>{pro1?.name}</td>
-                                        <td>{pro1?.detail}</td>
-                                        <td>{pro1?.statistics}</td>
+                                        <td>  {pro1?.name}__{pro1?.detail} <FiMinus color='green' size="30" /></td>
                                         <td>{pro1?.pro?.map((item, i) => {
                                             if (i === 0) {
                                                 return item
@@ -610,26 +612,26 @@ const Home = () => {
                                 ))}
 
                             </tbody>
+                        
                         </table>
+                        <button className='btn' style={addP} type='button'>Add Another benefit  <FiPlus color='green' size="30" />
+                                </button>
                         <h4 className='py-2 pt-4'>Risks</h4>
                         <table className='table-benefits'>
-                            <thead>
+                            {/* <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Risk</th>
-                                    <th>Explaination</th>
-                                    <th>Statistics</th>
-                                    <th>Procedure</th>
+                                    <th>Risk Name</th>
+                                    <th>Detail</th>
+
                                 </tr>
-                            </thead>
+                            </thead> */}
                             <tbody>
                                 {risks && risks.map((pro1, index) => (
                                     <tr key={index + 1}>
                                         {console.log("Benefit print in document : ", pro1)}
                                         <th>{index + 1}</th>
-                                        <td>{pro1?.name}</td>
-                                        <td>{pro1?.detail}</td>
-                                        <td>{pro1?.statistics}</td>
+                                        <td> {pro1?.name}__{pro1?.detail} <FiMinus color='green' size="30" /></td>
                                         <td>{pro1?.pro?.map((item, i) => {
                                             if (i === 0) {
                                                 return item
@@ -643,28 +645,31 @@ const Home = () => {
                                 ))}
 
                             </tbody>
+                           
                         </table>
+                        <button className='btn' style={addP} type='button'>Add Another risk  <FiPlus color='green' size="30" />
+                                </button>
 
                     </Col>
                 </Row>
 
             </Container>
 
-
-            {numCheck === 1 && (
-                <Document site={site} side={side} proceduresArr={proceduresArr} allBenefits={data} allRisks={data2} componentRef={componentRef} />
-            )}
-
-            {/* Footer  */}
-
+        {/* Footer  */}
             <div className=' mb-2 ' style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
             }}>
 
-                <button type='submit' onClick={handlePrint()} className='btn btn-success ' >Submit</button>
+                <button type='submit' onClick={() =>handlePrint()} className='btn btn-success ' >Submit</button>
             </div>
+            {numCheck >= 1 && (
+                <Document site={site} side={side} proceduresArr={proceduresArr} allBenefits={data} allRisks={data2} componentRef={componentRef} />
+            )}
+
+    
+
         </>
     )
 }

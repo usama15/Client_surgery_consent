@@ -41,7 +41,7 @@ const ProcedureFieldArray = ({ control, register, watch, reset, benPoints, setBe
 
   useEffect(() => {
     axios.get(`${GetServerUrl()}/admin/procedures`).then((response) => {
-      // console.log("response", response.data)
+      console.log("response", response.data)
       let procedureArray = [{ label: "Add New Procedure", value: "Add New Procedure" }];
       response.data.procedures && response.data.procedures.map((item) => procedureArray.push({
         label: item.name,
@@ -51,26 +51,26 @@ const ProcedureFieldArray = ({ control, register, watch, reset, benPoints, setBe
     })
   }, [])
   const addP = {
-    width:"84%",
-borderWidth:1,
-borderColor:"black",
-opacity:0.5,
-marginBottom:10
-}
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "black",
+    opacity: 0.5,
+    marginBottom: 10
+  }
   return (
     <div>
       <div className="row">
         {fields.map((item, index) => {
           return (
-            <div className="col-12" key={item.id}>
+            <div className='col-12' key={item.id}>
               {index > 0 && (
                 <hr className='w-100 my-4' style={{ borderBottom: '3px solid black' }} />
               )}
-              <div className="mb-3">
-                {/* <input type="text" placeholder='Search Procedure' style={{width: 'calc(100% - 120px)', display: 'inline-block'}} className='form-control' defaultValue={item.search} {...register(`Procedure[${index}.search]`)} /> */}
-                <div style={cssobj}>
-                  <Controller
+              <div className="mb-3" >
+                <div style={cssobj}
 
+                >
+                  <Controller
                     name={`Procedure[${index}.name]`}
                     control={control}
                     render={({ field }) => <Select
@@ -78,10 +78,9 @@ marginBottom:10
                       options={procedures}
                     />}
                   />
-                  {/* <Select options={procedures} defaultValue={item.search} {...register(`Procedure[${index}.search]`)} /> */}
                 </div>
 
-                <button className='btn ms-3' type='button' onClick={() => {
+                <button className='btn' type='button' onClick={() => {
                   remove(index);
                   ids.splice(index, 1);
                   benPoints.splice(index, 1);
@@ -90,6 +89,10 @@ marginBottom:10
 
                   {/* <FiPlus color='green' size="35" /> */}
                   <FiMinus color='green' size="29" />
+
+                </button>
+                <button className='btn' type='button'>
+                <FiPlus color='green' size="29" />
 
                 </button>
 
@@ -108,19 +111,18 @@ marginBottom:10
           )
         })}
       </div>
-      <div className="row ">
-        <Col  sm="12 ">
 
-          <button className='btn  ' style={addP} type='button' onClick={() => {
-            append();
-            setPro(pro + 1)
-          }}>Add Another Procedure  <FiPlus color='green' size="30" />
-          </button>
-        </Col>
+      <div className="row">
+        <button className='btn  ' style={addP} type='button' onClick={() => {
+          append();
+          setPro(pro + 1)
+        }}>Add Another Procedure  <FiPlus color='green' size="30" />
+        </button>
       </div>
+
     </div>
   )
- 
+
 }
 
 export default ProcedureFieldArray 
